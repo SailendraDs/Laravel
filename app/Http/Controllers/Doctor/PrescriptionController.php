@@ -35,6 +35,7 @@ class PrescriptionController extends Controller
             'medicines.*.name' => 'required|string',
             'medicines.*.dosage' => 'required|string',
             'medicines.*.frequency' => 'required|string',
+            'notes' => 'nullable|string',
         ]);
 
         Prescription::create([
@@ -44,7 +45,16 @@ class PrescriptionController extends Controller
             'notes' => $request->notes,
         ]);
 
-        return redirect()->route('doctor.prescriptions.index');
+        foreach ($request->medicines as $medicineData) {
+            $medicine = Medicine::firstOrCreate([
+                'name' => $medicineData['name'],
+                'dosage' => $medicineData['dosage']
+            ]);
+    
+            $prescription->medicines()->attach($medicine->id);
+        }
+
+        return redirect()->route('doctor.prescriptions.index')->with('status', 'Prescription created successfully!');
     }
 
     public function show(Prescription $prescription)

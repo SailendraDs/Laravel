@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Patient extends Model
+class Doctor extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'email', 'phone', 'address', 'dob', 'gender'];
+    protected $fillable = ['name', 'email', 'specialization'];
 
-    public function doctor()
+    public function patients()
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->hasMany(Patient::class);
     }
 
     public function prescriptions()
@@ -25,10 +25,4 @@ class Patient extends Model
     {
         return $this->hasMany(Appointment::class);
     }
-
-    public function dietaryProfiles()
-    {
-        return $this->hasOne(DietaryProfile::class);
-    }
 }
-

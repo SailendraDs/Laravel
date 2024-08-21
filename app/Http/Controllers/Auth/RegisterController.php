@@ -4,48 +4,24 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Patient;
+use App\Models\Doctor;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;  // <-- Make sure this is included
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
     use RegistersUsers;
 
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/dashboard';
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest');
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -55,30 +31,37 @@ class RegisterController extends Controller
         ]);
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
     protected function create(array $data)
-{
-    $role = 'patient'; // Default role
+    {
+        $role = 'patient'; // Default role
+        if (request()->is('doctor/register')) {
+            $role = 'doctor';
+        }
 
-    if (request()->is('doctor/register')) {
-        $role = 'doctor';
-    } elseif (request()->is('dietician/register')) {
-        $role = 'dietician';
-    } elseif (request()->is('admin/register')) {
-        $role = 'admin';
+        $user = User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => $role,
+        ]);
+
+        if ($role === 'doctor') {
+            $user->doctor()->create([
+                'user_id' => $user->id, 
+                'name' => $data['name'],
+                'email' => $data['email'],
+                // Additional fields if necessary
+            ]);
+        } else {
+            $user->patient()->create([
+                'user_id' => $user->id, 
+                'name' => $data['name'],
+                'email' => $data['email'],
+                // Additional fields if necessary
+            ]);
+        }
+
+        return $user;
     }
-
-    return User::create([
-        'name' => $data['name'],
-        'email' => $data['email'],
-        'password' => Hash::make($data['password']),
-        'role' => $role,
-    ]);
 }
 
-}

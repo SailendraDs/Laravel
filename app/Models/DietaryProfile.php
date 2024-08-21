@@ -1,3 +1,5 @@
+<?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -7,15 +9,20 @@ class DietaryProfile extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['patient_id', 'dietician_id', 'schedule'];
+    protected $fillable = ['patient_id', 'schedule'];
 
     public function patient()
     {
         return $this->belongsTo(Patient::class);
     }
 
-    public function dietician()
+    public function getScheduleAttribute($value)
     {
-        return $this->belongsTo(Dietician::class);
+        return json_decode($value, true);
+    }
+
+    public function setScheduleAttribute($value)
+    {
+        $this->attributes['schedule'] = json_encode($value);
     }
 }

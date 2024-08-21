@@ -1,17 +1,14 @@
 <?php
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfileController as Profile;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Doctor\AuthController as DoctorAuth;
 use App\Http\Controllers\Doctor\PatientController;
 use App\Http\Controllers\Doctor\PrescriptionController;
-use App\Http\Controllers\Dietician\DietaryProfileController;
-use App\Http\Controllers\Dietician\AuthController as DieticianAuth;
+use App\Http\Controllers\Doctor\DietaryProfileController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController as AdminAuth;
-use App\Http\Controllers\Patient\AuthController as PatientAuth;
-use App\Http\Controllers\Patient\ProfileController as PatientProfile;
 use App\Http\Controllers\Doctor\MedicineController;
 use App\Http\Controllers\Admin\ReportController;
 
@@ -28,12 +25,12 @@ use App\Http\Controllers\Admin\ReportController;
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/terms', [App\Http\Controllers\HomeController::class, 'terms'])->name('terms');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [PatientProfile::class, 'dashboard'])->name('dashboard');
-    Route::get('/profile', [PatientProfile::class, 'edit'])->name('profile.edit');
-    Route::post('/profile', [PatientProfile::class, 'update'])->name('profile.update');
+    Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/profile', [Profile::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [Profile::class, 'update'])->name('profile.update');
 });
 
 Route::prefix('doctor')->name('doctor.')->group(function() {
@@ -60,24 +57,13 @@ Route::prefix('doctor')->name('doctor.')->group(function() {
         Route::get('/medicines/{medicine}/edit', [MedicineController::class, 'edit'])->name('medicines.edit');
         Route::put('/medicines/{medicine}', [MedicineController::class, 'update'])->name('medicines.update');
         Route::delete('/medicines/{medicine}', [MedicineController::class, 'destroy'])->name('medicines.destroy');
-    });
-});
-
-Route::prefix('dietician')->name('dietician.')->group(function() {
-    Route::get('/login', [DieticianAuth::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [DieticianAuth::class, 'login']);
-    Route::get('/register', [DieticianAuth::class, 'showRegisterForm'])->name('register');
-    Route::post('/register', [DieticianAuth::class, 'register']);
-    Route::post('/verify-otp', [DieticianAuth::class, 'verifyOtp'])->name('verify-otp');
-
-    Route::middleware('dietician')->group(function() {
-        Route::get('/dashboard', [DieticianAuth::class, 'dashboard'])->name('dashboard');
         Route::get('/dietary-profiles', [DietaryProfileController::class, 'index'])->name('dietary-profiles.index');
         Route::get('/dietary-profiles/create/{patient}', [DietaryProfileController::class, 'create'])->name('dietary-profiles.create');
         Route::post('/dietary-profiles', [DietaryProfileController::class, 'store'])->name('dietary-profiles.store');
         Route::get('/dietary-profiles/{profile}', [DietaryProfileController::class, 'show'])->name('dietary-profiles.show');
     });
 });
+
 
 
 Route::prefix('admin')->name('admin.')->group(function() {

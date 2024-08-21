@@ -1,11 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.dash')
 
 @section('content')
 <div class="container">
-    <h1>Patients</h1>
+    <h3>Patients</h3>
     <ul>
         @foreach($patients as $patient)
-            <li><a href="{{ route('doctor.patients.show', $patient->id) }}">{{ $patient->name }}</a></li>
+            <li><a class="btn btn-primary" href="{{ route('doctor.patients.show', $patient->id) }}">{{ $patient->name }}</a></li>
         @endforeach
     </ul>
 </div>

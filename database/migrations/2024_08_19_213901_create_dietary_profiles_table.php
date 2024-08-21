@@ -6,22 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up()
-{
-    Schema::create('dietary_profiles', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('patient_id')->constrained()->onDelete('cascade');
-        $table->json('schedule');
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        Schema::create('dietary_profiles', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('patient_id')->constrained()->onDelete('cascade');
+            $table->foreignId('doctor_id')->constrained()->onDelete('cascade'); // assuming doctors create dietary profiles
+            $table->json('schedule'); // to store the schedule with foods, calories, and nutrition details
+            $table->timestamps();
+        });
+    }
 
-public function down()
-{
-    Schema::dropIfExists('dietary_profiles');
-}
-
+    public function down(): void
+    {
+        Schema::dropIfExists('dietary_profiles');
+    }
 };

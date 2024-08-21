@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Doctor;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Patient;
+use App\Models\Appointment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -79,7 +81,10 @@ class AuthController extends Controller
 
     public function dashboard()
     {
+        
         return view('doctor.dashboard');
+
     }
+    
 }
 

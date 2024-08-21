@@ -1,5 +1,5 @@
 <?php
-
+ 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,10 +11,22 @@ class Patient extends Model
 
     protected $fillable = ['name', 'email', 'phone', 'address', 'dob', 'gender'];
 
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
+    
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
     }
+
+    public function records()
+    {
+        return $this->hasMany(Record::class);
+    }
+    
 
     public function prescriptions()
     {
